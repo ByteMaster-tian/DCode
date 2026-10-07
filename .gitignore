@@ -1,0 +1,89 @@
+```gitignore
+# =========================
+# Python
+# =========================
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Type checking / linting
+.mypy_cache/
+.pyright/
+.ruff_cache/
+
+
+# =========================
+# uv
+# =========================
+
+# uv cache
+.uv/
+
+
+# =========================
+# PyCharm / JetBrains
+# =========================
+
+.idea/
+
+*.iml
+
+# =========================
+# macOS
+# =========================
+
+.DS_Store
+
+
+# =========================
+# Environment / Secrets
+# =========================
+
+.env
+.env.*
+!.env.example
+
+# Local configuration
+config.local.*
+config/*.local.*
+
+
+# =========================
+# Logs
+# =========================
+
+*.log
+
+
+# =========================
+# Temporary files
+# =========================
+
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+```

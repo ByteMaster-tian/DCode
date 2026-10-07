@@ -1,0 +1,22 @@
+[project]
+name = "DCode"
+version = "0.1.0"
+description = "A lightweight AI coding agent inspired by OpenCode."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+dependencies = [
+    "textual>=8.2.8",
+    "openai>=3.24.0",
+]
+
+[project.scripts]
+DCode = "DCode.main:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
