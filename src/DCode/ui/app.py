@@ -7,6 +7,8 @@ from DCode.model import create_model_provider
 from DCode.agent.agent import Agent
 from DCode.config import config as config
 from textual import work
+from DCode.session.session import Session
+from DCode.roles import MessageRole
 
 from DCode.ui.message import Message
 
@@ -21,7 +23,10 @@ class DCode(App):
         model = create_model_provider(
             config.MODEL_PROVIDER
         )
-        self.agent = Agent(model=model)
+
+        self.session = Session()
+
+        self.agent = Agent(model=model, session=self.session)
 
     CSS = """
     Screen {
@@ -156,24 +161,39 @@ class DCode(App):
                 Static("?: Help", classes="shortcut"),
                 id="shortcuts"
             )
-
+    """创建后台线程来运行Agent请求模型的操作，防止其与GUI线程产生冲突"""
     @work(thread = True)
     def run_agent(self, content: str, assistant_message: Message):
         response = ""
+        buffer = ""
         for chunk in self.agent.stream(content):
             response += chunk
-            self.call_from_thread(
-                self.update_assistant_message,
-                assistant_message,
-                response
-            )
+            buffer += chunk
+
+            # 积累一定chunk后更新为markdown
+            if len(buffer) >= 20:
+                self.call_from_thread(
+                    self.update_assistant_message,
+                    assistant_message,
+                    response
+                )
+                buffer = ""
+            # 最后剩余内容再更新一次
+            if buffer:
+                self.call_from_thread(
+                    self.update_assistant_message,
+                    assistant_message,
+                    response
+                )
 
     def update_assistant_message(self, message: Message, content: str):
         message.set_content(content)
         chat_view = self.query_one("#chat-view")
         chat_view.scroll_end(animate=True)
 
+    """输入框内容提交，请求大模型处理任务"""
     def on_input_submitted(self, event: Input.Submitted):
+        """从textual框架中的父类继承专门用于出发inputs 提交事件"""
         content = event.value.strip()
 
         if not content:
@@ -182,12 +202,14 @@ class DCode(App):
         chat_view = self.query_one("#chat-view")
         # 添加User Message
         chat_view.add_message(
-            role="User",
+            role=MessageRole.USER,
             content=content
         )
 
         assistant_message = chat_view.add_assistant_message("")
 
         self.run_agent(content, assistant_message)
-
+        # 请求大模型后清除输入框内容，以待下次输入
         event.input.value=""
+
+

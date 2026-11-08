@@ -14,6 +14,7 @@ class DeepSeekProvider(ModelProvider):
         self.model = model
 
     def generate(self, messages: list[dict]) -> str:
+        """阻塞式输出"""
         response = self.client.chat.completions.create(
             model = self.model,
             messages=messages,
@@ -22,6 +23,7 @@ class DeepSeekProvider(ModelProvider):
         return response.choices[0].message.content
 
     def stream(self, messages: list[dict]):
+        """流式输出"""
         response = self.client.chat.completions.create(
             model=self.model,
             messages=messages,

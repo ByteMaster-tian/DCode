@@ -5,5 +5,5 @@ def main():
 
 
 
-if __name__ == "__main__":
-    DCode().run()
+# if __name__ == "__main__":
+#     DCode().run()

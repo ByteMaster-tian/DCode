@@ -5,12 +5,12 @@ from DCode.config import config as config
 
 
 def create_model_provider(
-        prodider: str,
+        provider: str,
         **kwargs
 ) -> ModelProvider:
-    if prodider == "mock":
+    if provider == "mock":
         return MockModelProvider()
-    elif prodider == "deepseek":
+    elif provider == "deepseek":
         if not config.DEEPSEEK_API_KEY:
             raise ValueError("DEEPSEEK_API_KEY is not configured")
         return DeepSeekProvider(
@@ -18,4 +18,4 @@ def create_model_provider(
             model=config.DEEPSEEK_MODEL
         )
 
-    raise ValueError(f"Unsupported model provider; {prodider}")
+    raise ValueError(f"Unsupported model provider; {provider}")

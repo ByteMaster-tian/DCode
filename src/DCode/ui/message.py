@@ -1,5 +1,7 @@
 from textual.containers import Vertical
 from textual.widgets import Static
+from rich.markdown import Markdown
+from DCode.roles import MessageRole
 
 class Message(Vertical):
     """A Single conversation message."""
@@ -9,7 +11,7 @@ class Message(Vertical):
             content: str,
             **kwargs
     ):
-        if role == "User":
+        if role == MessageRole.USER:
             kwargs.setdefault("classes", "message user-message")
         else:
             kwargs.setdefault("classes", "message")
@@ -24,15 +26,15 @@ class Message(Vertical):
             classes="message-role"
         )
         yield Static(
-            self.content,
+            Markdown(self.content),
             classes="message-content"
         )
 
     def set_content(self, content:str):
-        """Update message content."""
+        """Update message content.将大模型响应消息渲染到GUI界面上，支持markdown格式渲染"""
         self.content = content
         content_weight = self.query_one(
             ".message-content",
             Static
         )
-        content_weight.update(content)
+        content_weight.update(Markdown(content))

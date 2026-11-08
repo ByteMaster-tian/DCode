@@ -9,6 +9,8 @@ __pycache__/
 
 *.so
 
+tests/
+
 # Virtual environments
 .venv/
 venv/
